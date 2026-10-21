@@ -5,7 +5,7 @@ def send_telegram_reminder(message):
     bot_token = os.getenv("TELEGRAM_BOT_TOKEN")
     chat_id = os.getenv("TELEGRAM_CHAT_ID")
 
-    # If tokens are missing or dummy, skip gracefully
+    # Agar tokens set nahi hain ya dummy hain, toh crash karne ke bajaye skip kar do
     if not bot_token or not chat_id or bot_token.lower() == "dummy":
         print("[INFO]: Telegram credentials not provided or set to dummy. Skipping notification.")
         return
@@ -25,6 +25,3 @@ def send_telegram_reminder(message):
             print(f"[WARNING]: Failed to send Telegram message: {response.text}")
     except Exception as e:
         print(f"[ERROR]: Telegram API Error: {e}")
-
-# Alias for backwards compatibility if referenced elsewhere
-send_telegram_notification = send_telegram_reminder
