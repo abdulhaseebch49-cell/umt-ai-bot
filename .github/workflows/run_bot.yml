@@ -1,0 +1,40 @@
+name: UMT AI Bot Daily Runner
+
+on:
+  schedule:
+    - cron: '0 6 * * *' # Runs daily at 6:00 AM UTC
+  workflow_dispatch: # Allows you to manually trigger it anytime
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install Dependencies
+        run: |
+          pip install selenium webdriver-manager requests reportlab
+
+      - name: Run Bot Script
+        env:
+          UMT_USERNAME: ${{ secrets.UMT_USERNAME }}
+          UMT_PASSWORD: ${{ secrets.UMT_PASSWORD }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          python3 main.py
+
+      - name: Commit and Push Generated Files
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/
+          git commit -m "Auto-update AI assignment solutions and dashboard [skip ci]" || exit 0
+          git push
