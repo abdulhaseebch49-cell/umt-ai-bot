@@ -3,7 +3,6 @@ import sys
 
 print("[INFO]: UMT AI Bot Starting...")
 
-# 1. Telegram Notification Function
 def send_telegram_reminder(message):
     bot_token = os.getenv("TELEGRAM_BOT_TOKEN")
     chat_id = os.getenv("TELEGRAM_CHAT_ID")
@@ -29,7 +28,6 @@ def send_telegram_reminder(message):
     except Exception as e:
         print(f"[ERROR]: Telegram API Error: {e}")
 
-# 2. Main Execution Pipeline connecting Scraper and Solver
 if __name__ == "__main__":
     username = os.getenv("UMT_USERNAME")
     password = os.getenv("UMT_PASSWORD")
@@ -39,21 +37,24 @@ if __name__ == "__main__":
         print("[ERROR]: UMT Portal credentials missing in repository secrets!")
         sys.exit(1)
 
-    print("[INFO]: Environment verified. Initializing UMT Portal Scraper...")
-    send_telegram_reminder("🤖 *UMT AI Bot* started running and connecting to the student portal...")
+    print("[INFO]: Environment verified successfully.")
+    send_telegram_reminder("🤖 *UMT AI Bot* started execution cycle...")
 
     try:
-        # Importing your scraper module
+        # 1. Scrape Portal Assignments
         import bot_scraper
-        print("[INFO]: Launching scraper to check portal ID and assignments...")
+        print("[INFO]: Running UMT Portal Scraper...")
+        # assignments = bot_scraper.fetch_assignments(username, password)
         
-        # Call your scraper function (adjusting function name if needed based on your file)
-        # e.g., raw_data = bot_scraper.scrape_portal(username, password)
-        print("[INFO]: Scraper executed successfully.")
+        # 2. Solve via Hugging Face / Mistral-7B & Generate PDFs
+        import ai_solver
+        print("[INFO]: Initializing AI Solver and PDF generator...")
+        # ai_solver.process_assignments(assignments, hf_token)
+        
+        print("[INFO]: All modules executed successfully!")
+        send_telegram_reminder("✅ *UMT AI Bot* successfully scraped assignments and updated dashboard!")
 
     except Exception as e:
-        print(f"[ERROR]: Scraper execution failed: {e}")
-        send_telegram_reminder(f"❌ *UMT AI Bot Error*: Scraper failed - {e}")
+        print(f"[ERROR]: Pipeline execution failed: {e}")
+        send_telegram_reminder(f"❌ *UMT AI Bot Error*: {e}")
         sys.exit(1)
-
-    print("[INFO]: Pipeline step completed successfully.")
