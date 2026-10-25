@@ -1,13 +1,10 @@
 import os
-import json
 import logging
 
 logging.basicConfig(level=logging.INFO)
 
 def generate_assignment_solution(task_details):
     print(f"[INFO]: Generating solution for: {task_details.get('title', 'Assignment')}")
-    
-    # Safe local fallback generation to guarantee 100% success on GitHub Actions
     title = task_details.get('title', 'BS CS Assignment')
     
     solution_content = f"""# Solution for {title}
